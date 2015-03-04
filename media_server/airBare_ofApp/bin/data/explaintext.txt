@@ -1,0 +1,4 @@
+Welcome to AirBare, where the invisible becomes visible. We're collecting air quality data from sensors located all over the city and we're turning this data into something you can see, touch, and explore.
+The dots you see floating in front of you are air particles - they represent the air you're breathing right this minute. The red, green, and blue particles represent three types of air pollution: carbon dioxide, carbon monoxide, and particulate matter.
+The more particles, the worse the pollution. Tap on any particle to pop it and learn more about air pollution and what you can do to help improve our city's air. And if you want to see how the air you're breathing now compares to air in other parts of Louisville, tap on the bar at the bottom of the screen to explore different neighborhoods.
+So get popping and help Louisville breathe easy! And if you pop enough particles, you might just get a nice surprise...
