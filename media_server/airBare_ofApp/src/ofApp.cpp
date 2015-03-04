@@ -356,7 +356,14 @@ void ofApp::update(){
 void ofApp::draw(){
     ofBackground(50);
     
-    video.draw(0, 0);
+//    video.draw(0, 0);
+    // rotate camera video 90 degrees for portrait mode
+    // hard coded dimensions for 1080 video
+    glPushMatrix();
+        ofTranslate(1080,1920);
+        ofRotate(90);
+        vidGrabber.draw(-1080,850);
+    glPopMatrix();
     
     ofSetColor(0, 175);
     ofRect(0, 0, ofGetWidth(), ofGetHeight());
