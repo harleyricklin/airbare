@@ -179,4 +179,6 @@ dependencies: \
   /Users/roopanew/Documents/of_v0.8.4_osx_release/apps/myApps/airBare_v5/src/particle.h \
   /Users/roopanew/Documents/of_v0.8.4_osx_release/apps/myApps/airBare_v5/src/DataThread.h \
   /Users/roopanew/Documents/of_v0.8.4_osx_release/apps/myApps/airBare_v5/src/InfoBubble.h \
+  /Users/roopanew/Documents/of_v0.8.4_osx_release/apps/myApps/airBare_v5/src/Button.h \
+  /Users/roopanew/Documents/of_v0.8.4_osx_release/apps/myApps/airBare_v5/src/Answer.h \
   ../../../libs/openFrameworks/app/ofAppGlutWindow.h

@@ -1,6 +1,12 @@
 dependencies: \
-  /Users/roopanew/Documents/of_v0.8.4_osx_release/apps/myApps/airBare_v5/src/ofApp.cpp \
-  /Users/roopanew/Documents/of_v0.8.4_osx_release/apps/myApps/airBare_v5/src/ofApp.h \
+  /Users/roopanew/Documents/of_v0.8.4_osx_release/addons/ofxOsc/src/ofxOscSender.cpp \
+  /Users/roopanew/Documents/of_v0.8.4_osx_release/addons/ofxOsc/src/ofxOscSender.h \
+  /Users/roopanew/Documents/of_v0.8.4_osx_release/addons/ofxOsc/libs/oscpack/src/osc/OscTypes.h \
+  /Users/roopanew/Documents/of_v0.8.4_osx_release/addons/ofxOsc/libs/oscpack/src/osc/OscOutboundPacketStream.h \
+  /Users/roopanew/Documents/of_v0.8.4_osx_release/addons/ofxOsc/libs/oscpack/src/osc/OscException.h \
+  /Users/roopanew/Documents/of_v0.8.4_osx_release/addons/ofxOsc/src/ofxOscBundle.h \
+  /Users/roopanew/Documents/of_v0.8.4_osx_release/addons/ofxOsc/src/ofxOscMessage.h \
+  /Users/roopanew/Documents/of_v0.8.4_osx_release/addons/ofxOsc/src/ofxOscArg.h \
   ../../../libs/openFrameworks/ofMain.h \
   ../../../libs/openFrameworks/utils/ofConstants.h \
   ../../../libs/glew/include/GL/glew.h \
@@ -171,13 +177,6 @@ dependencies: \
   ../../../libs/openFrameworks/video/ofQTKitPlayer.h \
   ../../../libs/openFrameworks/3d/ofCamera.h \
   ../../../libs/openFrameworks/3d/ofEasyCam.h \
-  /Users/roopanew/Documents/of_v0.8.4_osx_release/addons/ofxJSON/src/ofxJSON.h \
-  ../../../addons/ofxJSON/libs/jsoncpp/include/json/json.h \
-  ../../../addons/ofxJSON/src/ofxJSONElement.h \
-  /Users/roopanew/Documents/of_v0.8.4_osx_release/addons/ofxTextSuite/src/ofxTextSuite.h \
-  ../../../addons/ofxTextSuite/src/ofxTextBlock.h \
-  /Users/roopanew/Documents/of_v0.8.4_osx_release/apps/myApps/airBare_v5/src/particle.h \
-  /Users/roopanew/Documents/of_v0.8.4_osx_release/apps/myApps/airBare_v5/src/DataThread.h \
-  /Users/roopanew/Documents/of_v0.8.4_osx_release/apps/myApps/airBare_v5/src/InfoBubble.h \
-  /Users/roopanew/Documents/of_v0.8.4_osx_release/apps/myApps/airBare_v5/src/Button.h \
-  /Users/roopanew/Documents/of_v0.8.4_osx_release/apps/myApps/airBare_v5/src/Answer.h
+  /Users/roopanew/Documents/of_v0.8.4_osx_release/addons/ofxOsc/libs/oscpack/src/ip/UdpSocket.h \
+  /Users/roopanew/Documents/of_v0.8.4_osx_release/addons/ofxOsc/libs/oscpack/src/ip/NetworkingUtils.h \
+  /Users/roopanew/Documents/of_v0.8.4_osx_release/addons/ofxOsc/libs/oscpack/src/ip/IpEndpointName.h

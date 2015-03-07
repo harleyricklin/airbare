@@ -1,0 +1,5 @@
+Welcome to AirBare, where the invisible becomes visible. AirBare collects air quality data from sensors located all over Louisville and turns this data into something you can see, touch, and explore. The purple particles represent the amount of PM 2.5 in the air and the green particles represent the amount of CO. Expected number of asthma inhaler usage events per day given the PM 2.5 and temperature inputs are represented as the different colors of the PM 2.5 particles. 
+AirBare was made by @urbanmatterinc in collaboration with Creative Commons, Manylabs, Office of Civic Innovation, Louisville Metro Government & Louisville Downtown Partnership with funding from Robert Wood Johnson Foundation. The asthma inhaler data model is contributed by Propeller Health Data.
+To get involved, please follow @airbareky on Twitter.
+
+The dots you see floating in front of you are particles of pollution—they represent the air you’re breathing right this minute. Pop these particles to beat the HIGH SCORE and help Louisville breathe easy!

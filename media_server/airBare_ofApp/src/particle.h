@@ -42,7 +42,9 @@ public:
     bool prevPop;
     bool expand;
     
-    ofColor co2Color;
+    int dustRed;
+    
+    ofColor coColor;
     ofColor dustColor;
     ofColor popped;
     

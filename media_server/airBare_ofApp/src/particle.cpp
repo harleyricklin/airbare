@@ -15,17 +15,18 @@ particle::particle(float _x, float _y, float _targetX, float _targetY, int _type
     targetX = _targetX;
     targetY = _targetY;
     type = _type;
-    d = 30;
+    d = ofGetWidth()/15;
+    dustRed = 159;
     
     on = FALSE;
     pop = FALSE;
     prevPop = FALSE;
     
-    co2Color.r = 0;
-    co2Color.g = 200;
-    co2Color.b = 175;
+    coColor.r = 0;
+    coColor.g = 200;
+    coColor.b = 175;
     
-    dustColor.r = 159;
+    dustColor.r = dustRed;
     dustColor.g = 11;
     dustColor.b = 221;
     
@@ -38,7 +39,14 @@ particle::particle(float _x, float _y, float _targetX, float _targetY, int _type
 
 void particle::update() {
     
-    a = 100;
+    dustColor.r = dustRed;
+    
+    if (pop) {
+        a = 200;
+    } else if (type == 0){
+        a = 100;
+    }
+    
     if (x + d/2 >= ofGetWidth() || x - d/2 <= 0 || y + d/2 >= ofGetHeight() || y - d/2 <= 0) {
         targetX = ofRandomWidth();
         targetY = ofRandomHeight();
@@ -65,7 +73,7 @@ void particle::update() {
         if (d <= 28) {
             d = d+5;
         } else {
-            d = 30;
+            d = ofGetWidth()/15;
             expand = FALSE;
         }
     }
@@ -75,12 +83,12 @@ void particle::update() {
 
 void particle::render() {
     
+    ofFill();
     //setting color
-    if (pop == true) {
-        ofSetColor(popped);
-    } else if (type == 0) {
-        ofSetColor(co2Color, a);
+    if (type == 0) {
+        ofSetColor(coColor, a);
     } else {
+        
         ofSetColor(dustColor, a);
     }
 

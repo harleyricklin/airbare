@@ -32,7 +32,7 @@ class InfoBubble {
         void render();
         void checkPosition();
     
-    InfoBubble();
+    InfoBubble(float _targetD);
 };
 
 #endif /* defined(__airBare_test__InfoBubble__) */

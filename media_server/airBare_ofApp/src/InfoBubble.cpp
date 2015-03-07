@@ -8,10 +8,10 @@
 
 #include "InfoBubble.h"
 
-InfoBubble::InfoBubble() {
+InfoBubble::InfoBubble(float _targetD) {
     
     d = 0;
-    targetD = 200;
+    targetD = _targetD;
     x = ofGetWidth()/2;
     y = ofGetHeight()/2;
     
@@ -56,7 +56,7 @@ void InfoBubble::render() {
 
 void InfoBubble::checkPosition() {
     
-    if (ofDist(ofGetMouseX(), ofGetMouseY(), x, y) <= d/2) {
+    if (ofDist(ofGetMouseX(), ofGetMouseY(), x, y) <= d) {
         on = TRUE;
     } else {
         on = FALSE;

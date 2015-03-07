@@ -1,15 +1,22 @@
 #pragma once
 
 #include "ofMain.h"
+#include "ofxOsc.h"
 #include "ofxJSON.h"
 #include "ofxTextSuite.h"
 #include "particle.h"
 #include "DataThread.h"
 #include "InfoBubble.h"
+#include "Button.h"
+#include "Answer.h"
 #include <fstream>
 
 class ofApp : public ofBaseApp{
-
+    // OSC variables for ambient display
+    #define HOST "aribareled"
+        
+    #define PORT 1234
+    
 	public:
 		void setup();
 		void update();
@@ -25,35 +32,50 @@ class ofApp : public ofBaseApp{
 		void dragEvent(ofDragInfo dragInfo);
 		void gotMessage(ofMessage msg);
         void checkEdges();
+        void loadQuiz(string filename, int index);
+        void setAnswerCoordinates();
+        void displayInfoWindow();
+        void loadText();
+        void calculateInhalerData();
         void exit();
     
     
     float temperature;
     float humidity;
     float dust;
-    float co2;
-    
-    int sensors;
-    int sensorNum;
-    int displayedNum;
-    float displayedTemp;
+    float co;
     
     int state;
     int prevState;
     int timer;
     int beginTimer;
-    int co2Count;
+    int coCount;
     int dustCount;
     int attractorText;
-    
+    int factSelect;
     int textAlpha;
     int imageAlpha;
     int a;
     
-    int explainCount;
+    int imageCount;
     int clickCount;
+    int answerCount;
+    int quizNumber;
+    
+    int idleTimer;
+    int beginIdle;
     
     int factType;
+    
+    int previous;
+    float textWidth;
+    float totalHeight;
+    
+    bool intro;
+    bool infoWindow;
+    bool quizTime;
+    bool next;
+    bool beginning;
     
     string score;
     
@@ -61,10 +83,14 @@ class ofApp : public ofBaseApp{
     vector<string> introText;
     vector<string> introScreen;
     vector<string> explainScreen;
+    vector<string> infoText;
     string introscreen;
     
-    vector<string> factsTips[5];
-    InfoBubble info;
+    vector<string> facts[3];
+    vector<string> quiz[3];
+    vector<Answer> answers[3];
+    InfoBubble info = InfoBubble(ofGetWidth()/3);
+    vector<Button> buttons;
     
     DataThread thread;
     
@@ -75,9 +101,16 @@ class ofApp : public ofBaseApp{
     ofTrueTypeFont callFont;
     
     ofxTextBlock text;
-    ofxTextBlock scoreText;
     ofxTextBlock moreInfo;
+    ofxTextBlock answer1;
+    ofxTextBlock answer2;
+    ofxTextBlock answer3;
+    ofxTextBlock infoWindowText1;
+    ofxTextBlock infoWindowText2;
+    ofxTextBlock infoWindowText3;
     TextBlockAlignment alignment;
     
+    // define the OSC sender
+    ofxOscSender sender;
 		
 };
