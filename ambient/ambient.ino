@@ -166,7 +166,7 @@ void allStrips(uint32_t color) {
 
 // turn off all the leds in all strips 
 void clearStrips(){
-   allStrips(strip[i].Color(0, 0, 0));
+   allStrips(strip[0].Color(0, 0, 0));
 }
 
 
@@ -178,7 +178,7 @@ void initializeStrips(){
     Serial.println(i);
   }
   delay(1500);
-  clearStrips(-1);
+  clearStrips();
   Serial.println("initializeStrips : DONE");
 }
 
@@ -214,7 +214,7 @@ void setup() {
   //setup ethernet part
   Ethernet.begin(mac,ip);
   Udp.begin(inPort);
-  clearStrips(0);
+  clearStrips();
   initializeStrips();
 }
 
