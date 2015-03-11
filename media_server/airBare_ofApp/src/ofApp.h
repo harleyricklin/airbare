@@ -16,6 +16,9 @@ class ofApp : public ofBaseApp{
     #define HOST "aribareled"
         
     #define PORT 1234
+
+    // number for max end of inhaler usage scale
+    #define MAXINHALER 20
     
 	public:
 		void setup();

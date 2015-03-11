@@ -1147,7 +1147,7 @@ void ofApp::header() {
     
     ofSetColor(255);
     inhalerText.drawString("0", 20, 109);
-    inhalerText.drawString("10+", 420, 109);
+    inhalerText.drawString(ofToString(MAXINHALER) + "+", 420, 109);
 }
 
 void ofApp::displayInfoWindow() {
