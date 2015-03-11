@@ -67,6 +67,9 @@ public:
         coValue = response["results"][lastCollected]["data"][6].asFloat();
         dustValue = response["results"][lastCollected]["data"][5].asFloat();
         tempValue = response["results"][lastCollected]["data"][1].asFloat();
+
+        // sensor temperature is in Celsius, convert to Fahrenheit
+        tempValue = tempValue * 9 / 5 + 32;
 //
 //        cout << "Data collected!" << endl;
 //        cout << "co: " << coValue << endl;
