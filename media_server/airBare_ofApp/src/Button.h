@@ -24,6 +24,7 @@ public:
     bool pressed;
     
     int type;
+    int a;
     
     int buttonTimer;
     int beginPress;
@@ -31,6 +32,11 @@ public:
     float x, y, d;
     
     string text;
+    
+    ofImage about;
+    ofImage home;
+    ofImage playgame;
+    ofImage morephotos;
     
     Button(int _type);
 };

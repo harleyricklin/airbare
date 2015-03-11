@@ -33,10 +33,10 @@ class ofApp : public ofBaseApp{
 		void gotMessage(ofMessage msg);
         void checkEdges();
         void loadQuiz(string filename, int index);
-        void setAnswerCoordinates();
         void displayInfoWindow();
         void loadText();
         void calculateInhalerData();
+        void header();
         void exit();
     
     
@@ -54,6 +54,7 @@ class ofApp : public ofBaseApp{
     int attractorText;
     int factSelect;
     int textAlpha;
+    int introp2Alpha;
     int imageAlpha;
     int a;
     
@@ -66,10 +67,15 @@ class ofApp : public ofBaseApp{
     int beginIdle;
     
     int factType;
+    int totalScore;
+    int highScore;
     
     int previous;
     float textWidth;
     float totalHeight;
+    
+    float usage;
+    int currentRed;
     
     bool intro;
     bool infoWindow;
@@ -96,11 +102,16 @@ class ofApp : public ofBaseApp{
     
     ofVideoGrabber video;
     ofImage introImage;
+    ofImage introOverlay;
     
     ofTrueTypeFont myFont;
     ofTrueTypeFont callFont;
+    ofTrueTypeFont scoreText;
+    ofTrueTypeFont headerText;
+    ofTrueTypeFont inhalerText;
     
     ofxTextBlock text;
+    ofxTextBlock introP2;
     ofxTextBlock moreInfo;
     ofxTextBlock answer1;
     ofxTextBlock answer2;

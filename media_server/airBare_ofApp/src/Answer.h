@@ -19,11 +19,14 @@ public:
     bool correct;
     bool select;
     bool pressed;
+    bool reveal;
     
     float x;
     float y;
     float w;
     float h;
+    
+    ofColor fill;
     
     Answer(string _text, bool _correct);
     

@@ -23,8 +23,8 @@ particle::particle(float _x, float _y, float _targetX, float _targetY, int _type
     prevPop = FALSE;
     
     coColor.r = 0;
-    coColor.g = 200;
-    coColor.b = 175;
+    coColor.g = 180;
+    coColor.b = 158;
     
     dustColor.r = dustRed;
     dustColor.g = 11;
