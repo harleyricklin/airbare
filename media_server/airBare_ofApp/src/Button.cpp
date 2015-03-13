@@ -38,12 +38,22 @@ Button::Button(int _type) {
 }
 
 void Button::update() {
-    
-    if (ofDist(ofGetMouseX(), ofGetMouseY(), x, y) <= d/2) {
-        on = true;
-        
+    if (type == 0) {
+        if (ofGetMouseX() >= x-(3*d/2) && ofGetMouseX() <= (x-(3*d/2)) + 3*d) {
+            if (ofGetMouseY() >= y-d/2 && ofGetMouseY() <= (y-d/2) + d) {
+                on = true;
+                
+            } else {
+                on = false;
+            }
+        }
     } else {
-        on = false;
+        if (ofDist(ofGetMouseX(), ofGetMouseY(), x, y) <= d) {
+            on = true;
+            
+        } else {
+            on = false;
+        }
     }
     
     prevOn = on;

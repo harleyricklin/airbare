@@ -41,7 +41,7 @@ public:
     
     void collectData() {
         
-        std::string baseurl = "https://www.manylabs.org/data/api/v1/datasets/563/rows/";
+        std::string baseurl = "https://www.manylabs.org/data/api/v0/datasets/563/rows/";
         std::stringstream newurl;
         std::string url;
         

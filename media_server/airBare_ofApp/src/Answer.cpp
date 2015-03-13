@@ -23,7 +23,7 @@ void Answer::renderBackground(float _x, float _y){
     y = _y;
     
     ofFill();
-    ofSetColor(fill);
+    ofSetColor(fill, a);
     ofCircle(x, y, 100);
     
     if (reveal == true) {

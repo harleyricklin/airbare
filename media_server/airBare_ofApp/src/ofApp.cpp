@@ -12,7 +12,17 @@ void ofApp::setup(){
     video.setDeviceID(0);
     video.initGrabber(1920, 1080);
     
-    introImage.loadImage("intro.jpg");
+    for (int i = 0; i < 2; i++) {
+        introImages.push_back(ofImage());
+        std::stringstream filename;
+        filename << "intro" << i << ".jpg";
+        
+        introImages[i].loadImage(filename.str());
+        
+//        cout << filename.str() << " loaded" << endl;
+    }
+    
+    
     introOverlay.loadImage("infoOverlay.png");
     
     for (int i = 0; i < 4; i++) {
@@ -26,7 +36,6 @@ void ofApp::setup(){
     inhalerText.loadFont("Apercu Light.otf", 10);
     
     text.init("Apercu Medium.otf", 50);
-    introP2.init("Apercu Medium.otf", 50);
     answer1.init("Apercu Medium.otf", 35);
     answer2.init("Apercu Medium.otf", 35);
     answer3.init("Apercu Medium.otf", 35);
@@ -34,10 +43,16 @@ void ofApp::setup(){
     infoWindowText1.init("Apercu Medium.otf", 35);
     infoWindowText2.init("Apercu Medium.otf", 35);
     infoWindowText3.init("Apercu Medium.otf", 35);
-
-    alignment = OF_TEXT_ALIGN_CENTER;
     
     loadText();
+    
+    for (int i = 0; i < 3; i++) {
+        captions[i].init("Apercu Medium.otf", 35);
+        captions[i].setText(introScreen[i]);
+        captions[i].wrapTextArea(500, 200);
+    }
+
+    alignment = OF_TEXT_ALIGN_CENTER;
     
     thread.start();
     
@@ -53,6 +68,7 @@ void ofApp::setup(){
     answerCount = 0;
     previous = 0;
     factSelect = 0;
+    correctTracker = 0;
     
     idleTimer = 0;
     beginIdle = 0;
@@ -90,9 +106,9 @@ void ofApp::update(){
     dust = thread.dustValue;
     temperature = thread.tempValue;
     
-    float totalco = ofMap(thread.coValue, 0, 2, 10, 100);
-    float totaldust = ofMap(thread.dustValue, 0, 500, 10, 100);
-    float totalNum = totalco + totaldust;
+    int totalco = int(ofMap(thread.coValue, 0, 2, 10, 100));
+    int totaldust = int(ofMap(thread.dustValue, 0, 500, 10, 100));
+    int totalNum = totalco + totaldust;
     
     calculateInhalerData();
     
@@ -115,17 +131,24 @@ void ofApp::update(){
             }
         }
         
+        cout << "CO particles on screen: " << coparticles << endl;
+        cout << "PM particles on screen: " << dustparticles << endl;
+        
+        cout << "CO particles needed: " << totalco << endl;
+        cout << "PM particles needed: " << totaldust << endl;
+        
         if (coparticles < totalco) {
             int diff = totalco - coparticles;
             particles.push_back(particle(ofRandomWidth(), ofRandomHeight(), ofRandomWidth(), ofRandomHeight(), 0));
         } else if (coparticles > totalco){
+//            cout << "CO particles present: " << coparticles << endl;
             int diff = coparticles - totalco;
-            
+            int counter = 0;
             for (int i = particles.size() - 1; i >= 10; i--) {
-                for (int j = 0; j < diff; j++) {
-                    if (particles[i].type == 0) {
-                        particles.erase(particles.begin() + i);
-                    }
+                if (particles[i].type == 0 && counter < diff) {
+                    particles.erase(particles.begin() + i);
+                    counter++;
+                    cout << "erased a particle" << endl;
                 }
             }
         }
@@ -134,13 +157,15 @@ void ofApp::update(){
             int diff = totaldust - dustparticles;
             particles.push_back(particle(ofRandomWidth(), ofRandomHeight(), ofRandomWidth(), ofRandomHeight(), 1));
         } else if (dustparticles > totaldust){
+//            cout << "PM particles present: " << dustparticles << endl;
             int diff = dustparticles - totaldust;
+            int counter = 0;
             
             for (int i = particles.size() - 1; i >= 10; i--) {
-                for (int j = 0; j < diff; j++) {
-                    if (particles[i].type == 1) {
-                        particles.erase(particles.begin() + i);
-                    }
+                if (particles[i].type == 1 && counter < diff) {
+                    particles.erase(particles.begin() + i);
+                    counter++;
+                    cout << "erased a particle" << endl;
                 }
             }
         }
@@ -161,6 +186,7 @@ void ofApp::update(){
     //particles
     for (int i = 0; i < particles.size(); i++) {
         
+        currentRed = particles[i].dustRed;
         particles[i].update();
         checkEdges();
         particles[i].checkPosition(mouseX, mouseY);
@@ -228,19 +254,23 @@ void ofApp::update(){
                 if (totalScore > highScore){
                     highScore = totalScore;
                     text.setText("You have the new HIGH SCORE. You're a Premium Particle Popper!");
-                    text.wrapTextArea(400, 400);
+                    text.wrapTextArea(450, 450);
                     info.expand = TRUE;
-                    cout << "High Score: " << highScore << endl;
+//                    cout << "High Score: " << highScore << endl;
                     
                 } else if (totalScore < highScore) {
                     text.setText("Thanks for playing!");
                     text.wrapTextArea(400, 400);
                     info.expand = TRUE;
-                    cout << "High Score: " << highScore << endl;
+//                    cout << "High Score: " << highScore << endl;
                 }
                 
             } else {
-                text.setText("Well done! Take another quiz to increase your score.");
+                if (correctTracker > 0) {
+                    text.setText("Well done! Take another quiz to increase your score.");
+                } else {
+                    text.setText("Try again! Take another quiz to increase your score.");
+                }
                 text.wrapTextArea(400, 400);
                 info.expand = TRUE;
             }
@@ -253,6 +283,7 @@ void ofApp::update(){
             quizNumber++;
             next = false;
             quizTime = false;
+            correctTracker = 0;
         } else if (beginning == true && info.d <= 10){
             state = 0;
             beginning = false;
@@ -261,7 +292,7 @@ void ofApp::update(){
         
     } if (state == 8) {
         if (prevState == 7) {
-            cout << "PREV STATE 7" << endl;
+//            cout << "PREV STATE 7" << endl;
             coCount = 0;
             dustCount = 0;
         }
@@ -275,13 +306,13 @@ void ofApp::update(){
                 if (answerCount <= 2){
                     if (info.d <= 10 || answerCount != previous){
                         text.setText(quiz[quizNumber][answerCount*4]);
-                        text.wrapTextArea((2*ofGetWidth()/3)-150, (2*ofGetWidth())/9);
+                        text.wrapTextArea(400, 200);
                         answer1.setText(answers[quizNumber][answerCount*3].text);
-                        answer1.wrapTextArea(140, 140);
+                        answer1.wrapTextArea(110, 140);
                         answer2.setText(answers[quizNumber][(answerCount*3)+1].text);
-                        answer2.wrapTextArea(140, 140);
+                        answer2.wrapTextArea(100, 140);
                         answer3.setText(answers[quizNumber][(answerCount*3)+2].text);
-                        answer3.wrapTextArea(140, 140);
+                        answer3.wrapTextArea(90, 140);
                         
                         info.expand = TRUE;
                     }
@@ -294,13 +325,15 @@ void ofApp::update(){
                 if (answerCount <= 2) {
                 answers[quizNumber][(answerCount*3) + i].checkAnswer();
                 if (answers[quizNumber][(answerCount*3) + i].pressed) {
-                    cout << "Is this correct? " << answers[quizNumber][(answerCount*3) + i].correct << " " << answers[quizNumber][(answerCount*3) + i].text << endl;
+//                    cout << "Is this correct? " << answers[quizNumber][(answerCount*3) + i].correct << " " << answers[quizNumber][(answerCount*3) + i].text << endl;
                     for (int j = 0; j < 3; j++) {
                         answers[quizNumber][(answerCount*3) + j].reveal = true;
                     }
                     if (answers[quizNumber][(answerCount*3) + i].correct == true) {
-                        text.setText("Good job!");
+                        text.setText("Nice job! You picked the right answer.");
+                        text.wrapTextArea(400, 200);
                         totalScore += 5;
+                        correctTracker++;
                     } else {
                         text.setText("Sorry, the correct answer is:");
                         text.wrapTextArea(400, 200);
@@ -316,7 +349,7 @@ void ofApp::update(){
     } else if (state == 7) {
         if (prevState == 6) {
             
-            cout << "PREV STATE 6" << endl;
+//            cout << "PREV STATE 6" << endl;
             
             text.setText("Pop 5 more particles and pay attention... there will be a POP QUIZ at the end.");
             text.wrapTextArea(400, 400);
@@ -330,7 +363,7 @@ void ofApp::update(){
         
     } else if (state == 6){
         if (prevState == 5) {
-            cout << "PREV STATE 5" << endl;
+//            cout << "PREV STATE 5" << endl;
             std::stringstream convert;
             convert << "Well done! You popped " << coCount << " CO particles and " << dustCount << " particulate particles! Now try to increase your score with a POP QUIZ!" << endl;
             
@@ -344,7 +377,7 @@ void ofApp::update(){
         //gameplay
     } else if (state == 5) {
         if (prevState == 4) {
-            cout << "PREV STATE 4" << endl;
+//            cout << "PREV STATE 4" << endl;
             beginTimer = ofGetElapsedTimeMillis();
         }
         
@@ -360,7 +393,7 @@ void ofApp::update(){
         }
         
         if (prevState == 3 || prevState == 9) {
-            cout << "PREV STATE 3" << endl;
+//            cout << "PREV STATE 3" << endl;
             textAlpha = 0;
             text.setText("Pop as many particles as you can in 10 seconds by tapping the screen.");
             text.wrapTextArea(450, 350);
@@ -372,7 +405,7 @@ void ofApp::update(){
         }
         
         if (prevState == 2) {
-            cout << "PREV STATE 2" << endl;
+//            cout << "PREV STATE 2" << endl;
             textAlpha = 0;
             text.setText(explainScreen[0]);
             text.wrapTextArea(textWidth, textWidth);
@@ -381,7 +414,7 @@ void ofApp::update(){
         //intro screen
     } else if (state == 1) {
         if (prevState == 0) {
-            cout << "PREV STATE 0" << endl;
+//            cout << "PREV STATE 0" << endl;
             textAlpha = 0;
             introp2Alpha = 0;
             
@@ -427,20 +460,30 @@ void ofApp::update(){
         if (info.d > 300 && info.expand == FALSE) {
             info.contract = TRUE;
             beginning = true;
-            cout << "STATE RESET TO 0" << endl;
+            
+            for (int i = 0; i < 9; i++) {
+                for (int j = 0; j < 3; j++) {
+                    answers[j][i].reveal = false;
+                }
+            }
+            answerCount = 0;
+            quizNumber = 0;
+//            cout << "STATE RESET TO 0" << endl;
         }
     }
     
     if (state != 0) {
         if (beginning == true && info.d <= 10) {
-            
+            textAlpha = -50;
+            text.setText(introText[attractorText]);
+            text.wrapTextArea(300, 300);
             beginning = false;
             state = 0;
             quizNumber = 0;
             quizTime = false;
             factSelect = 0;
             
-            cout << "Quiz number: " << quizNumber << " Quiz on?: " << quizTime << endl;
+//            cout << "Quiz number: " << quizNumber << " Quiz on?: " << quizTime << endl;
         }
     }
     
@@ -519,23 +562,26 @@ void ofApp::draw(){
         
         if (quizTime == true) {
             
-            text.drawCenter(ofGetWidth()/2, ofGetHeight()/2-text.getHeight()-50);
+            text.drawCenter(ofGetWidth()/2, ofGetHeight()/2-text.getHeight()-75);
             
             if (answerCount <= 2) {
-            
-                if (textAlpha >= 255) {
+                
+                for (int i = 0; i < 3; i++) {
+                    answers[quizNumber][(answerCount*3) + i].a = mappedAlpha;
+                }
+//                if (textAlpha >= 255) {
                     answers[quizNumber][answerCount*3].renderBackground(ofGetWidth()/2 - 215, ofGetHeight()/2 + 100);
                     answers[quizNumber][answerCount*3+1].renderBackground(ofGetWidth()/2, ofGetHeight()/2 + 100);
                     answers[quizNumber][answerCount*3+2].renderBackground(ofGetWidth()/2 + 215, ofGetHeight()/2 + 100);
-                }
+//                }
                 
-                    answer1.setColor(255, 255, 255, 255);
-                    answer2.setColor(255, 255, 255, 255);
-                    answer3.setColor(255, 255, 255, 255);
+                    answer1.setColor(255, 255, 255, mappedAlpha);
+                    answer2.setColor(255, 255, 255, mappedAlpha);
+                    answer3.setColor(255, 255, 255, mappedAlpha);
                     
-                    answer1.drawCenter(answers[quizNumber][answerCount*3].x, answers[quizNumber][answerCount*3].y-answer1.getWidth()/2);
-                    answer2.drawCenter(answers[quizNumber][answerCount*3+1].x, answers[quizNumber][answerCount*3+1].y-answer1.getWidth()/2);
-                    answer3.drawCenter(answers[quizNumber][answerCount*3+2].x, answers[quizNumber][answerCount*3+2].y-answer1.getWidth()/2);
+                    answer1.drawCenter(answers[quizNumber][answerCount*3].x, answers[quizNumber][answerCount*3].y-answer1.getHeight()/2);
+                    answer2.drawCenter(answers[quizNumber][answerCount*3+1].x, answers[quizNumber][answerCount*3+1].y-answer2.getHeight()/2);
+                    answer3.drawCenter(answers[quizNumber][answerCount*3+2].x, answers[quizNumber][answerCount*3+2].y-answer3.getHeight()/2);
             }
             
             for (int i = 0; i < 3; i++) {
@@ -606,7 +652,7 @@ void ofApp::draw(){
         
         if (timer >= 10) {
             state = 6;
-            cout << "STATE 6" << endl;
+//            cout << "STATE 6" << endl;
         }
         
         string s = "Time left: " + convert.str();
@@ -658,14 +704,15 @@ void ofApp::draw(){
         }
         
         ofSetColor(100, imageAlpha);
-        introImage.draw(0, 0, ofGetWidth(), ofGetHeight());
+        introImages[imageCount].draw(0, 0, ofGetWidth(), ofGetHeight());
         
         int mappedAlpha = ofMap(textAlpha, -60, 260, 0, 255);
-        text.setColor(255, 255, 255, mappedAlpha);
-        text.drawRight(ofGetWidth()-100, ofGetHeight()/2+300);
+
+        captions[imageCount].setColor(255, 255, 255, mappedAlpha);
+        captions[imageCount].drawRight(ofGetWidth()-100, ofGetHeight()/2 + 300 + text.getHeight() + 20);
         
-        introP2.setColor(255, 255, 255, mappedAlpha);
-        introP2.drawRight(ofGetWidth()-100, ofGetHeight()/2 + 300 + text.getHeight() + 20);
+        ofSetColor(255, 255, 255, imageAlpha-50);
+        headerText.drawString("Photo by Al Blanc, November 28 1943.", 10, 30);
         
         buttons[0].a = imageAlpha;
         buttons[1].a = imageAlpha;
@@ -682,8 +729,6 @@ void ofApp::draw(){
             } else if (imageAlpha >= 255) {
                 if (textAlpha <= 255) {
                     textAlpha += 10;
-                } else if (textAlpha >= 255 && introp2Alpha <= 255) {
-                    introp2Alpha += 10;
                 }
             }
             
@@ -692,15 +737,15 @@ void ofApp::draw(){
         }
         
         ofSetColor(100, imageAlpha);
-        introImage.draw(0, 0, ofGetWidth(), ofGetHeight());
+        introImages[imageCount].draw(0, 0, ofGetWidth(), ofGetHeight());
         
         int mappedAlpha = ofMap(textAlpha, 0, 260, 0, 255);
-        text.setColor(255, 255, 255, mappedAlpha);
-        text.drawRight(ofGetWidth()-100, ofGetHeight()/2+300);
+
+        captions[imageCount].setColor(255, 255, 255, mappedAlpha);
+        captions[imageCount].drawRight(ofGetWidth()-100, ofGetHeight()/2 + 300 + text.getHeight() + 20);
         
-        mappedAlpha = ofMap(introp2Alpha, 0, 260, 0, 255);
-        introP2.setColor(255, 255, 255, mappedAlpha);
-        introP2.drawRight(ofGetWidth()-100, ofGetHeight()/2 + 300 + text.getHeight() + 20);
+        ofSetColor(255, 255, 255, imageAlpha-50);
+        headerText.drawString("Photo by Al Blanc, November 28 1943.", 10, 30);
         
         buttons[0].a = imageAlpha;
         buttons[1].a = imageAlpha;
@@ -783,8 +828,7 @@ void ofApp::mousePressed(int x, int y, int button){
             }
         }
     }
-    
-    cout << factType << endl;
+//    cout << factType << endl;
     
     if (info.on == TRUE && info.expand == FALSE) {
         if (state == 9) {
@@ -801,12 +845,6 @@ void ofApp::mousePressed(int x, int y, int button){
                     
                     next = true;
                     beginning = false;
-                    //            } else {
-                    //                beginning = true;
-                    //                next = false;
-                    //                quizNumber = 0;
-                    //                quizTime = false;
-                    //                answerCount = 0;
                 }
             }
         }
@@ -819,25 +857,31 @@ void ofApp::mousePressed(int x, int y, int button){
                     state = 9;
                     answerCount = 0;
                     clickCount = 0;
+                    for (int i = 0; i < 9; i++) {
+                        for (int j = 0; j < 3; j++) {
+                            answers[j][i].reveal = false;
+                        }
+                    }
                 } else {
                     
                     if (ofGetMouseY() > ofGetHeight()/2 + 200 && ofGetMouseY() <= ofGetHeight()/2 + info.d) {
                         
                         for (int i = 0; i < 3; i++) {
-                            answers[quizNumber][(answerCount*3) + i].reveal = false;
+                            for (int j = 0; j < 3; j++) {
+                                answers[j][(answerCount*3) + i].reveal = false;
+                            }
                         }
                         answerCount++;
                     }
                 }
-                cout << "answer count: " << answerCount << endl;
-                //                factSelect = 0;
+//                cout << "answer count: " << answerCount << endl;
+                
             } else if (quizTime == false) {
                 info.contract = TRUE;
                 factSelect++;
-                cout << "fact select: " << factSelect << endl;
+//                cout << "fact select: " << factSelect << endl;
             }
             
-            //            textAlpha = -50;
             
         } else if (state == 7) {
             info.contract = TRUE;
@@ -861,10 +905,13 @@ void ofApp::mousePressed(int x, int y, int button){
     if (state == 8) {
         if (quizTime == TRUE) {
             for (int i = 0; i < 3; i++) {
-                if (answers[quizNumber][(answerCount*3) + i].select) {
-                    answers[quizNumber][(answerCount*3) + i].pressed = true;
-                } else {
-                    answers[quizNumber][(answerCount*3) + i].pressed = false;
+                
+                if (answers[quizNumber][(answerCount*3) + i].a >= 255) {
+                    if (answers[quizNumber][(answerCount*3) + i].select) {
+                        answers[quizNumber][(answerCount*3) + i].pressed = true;
+                    } else {
+                        answers[quizNumber][(answerCount*3) + i].pressed = false;
+                    }
                 }
             }
         }
@@ -882,8 +929,14 @@ void ofApp::mousePressed(int x, int y, int button){
     
     if (state == 1) {
         if (buttons[1].on) {
-            imageCount ++;
-            cout << imageCount << endl;
+            textAlpha = 0;
+            if (imageCount == 1) {
+                imageCount = 0;
+            } else {
+                imageCount ++;
+            }
+            
+//            cout <<"image count " << imageCount << endl;
         } else if (buttons[0].on) {
             state++;
         }
@@ -902,13 +955,13 @@ void ofApp::mousePressed(int x, int y, int button){
         if (buttons[2].on) {
             infoWindow = true;
             
-            cout << "INFO WINDOW APPEARS" << endl;
+//            cout << "INFO WINDOW APPEARS" << endl;
         }
     } else {
         
         if(ofDist(ofGetMouseX(), ofGetMouseY(), info.x, info.y) > info.d) {
             infoWindow = false;
-            cout << "INFO WINDOW GONE" << endl;
+//            cout << "INFO WINDOW GONE" << endl;
         }
     }
     
@@ -918,15 +971,22 @@ void ofApp::mousePressed(int x, int y, int button){
             info.contract = TRUE;
         }
         
-        cout << "EXIT BUTTON PRESSED" << endl;
+//        cout << "EXIT BUTTON PRESSED" << endl;
         beginning = true;
+        for (int i = 0; i < 9; i++) {
+            for (int j = 0; j < 3; j++) {
+                answers[j][i].reveal = false;
+            }
+        }
+        answerCount = 0;
+        quizNumber = 0;
         text.setText(introText[attractorText]);
         text.wrapTextArea(300, 300);
         textAlpha = -50;
     }
     
     
-    cout << "state: " << state << endl;
+//    cout << "state: " << state << endl;
     
 }
 
@@ -998,6 +1058,8 @@ void ofApp::loadText() {
         getline(f, s);
         introScreen.push_back(s);
         introscreen = introscreen + s + "\n\n";
+        
+        captions.push_back(ofxTextBlock());
     }
     
     f.close();
@@ -1142,12 +1204,12 @@ void ofApp::header() {
     
     for (int i = 0; i < 15; i++) {
         ofSetColor(100 + int(10.33*i), 11, 221);
-        ofCircle(50 + (25*i), 105, 6);
+        ofCircle(50 + (22.5*i), 105, 6);
     }
     
     ofSetColor(255);
     inhalerText.drawString("0", 20, 109);
-    inhalerText.drawString(ofToString(MAXINHALER) + "+", 420, 109);
+    inhalerText.drawString(ofToString(MAXINHALER) + "+", 385, 109);
 }
 
 void ofApp::displayInfoWindow() {

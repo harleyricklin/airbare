@@ -65,6 +65,7 @@ class ofApp : public ofBaseApp{
     int clickCount;
     int answerCount;
     int quizNumber;
+    int correctTracker;
     
     int idleTimer;
     int beginIdle;
@@ -89,6 +90,7 @@ class ofApp : public ofBaseApp{
     string score;
     
     vector<particle> particles;
+    vector<ofImage> introImages;
     vector<string> introText;
     vector<string> introScreen;
     vector<string> explainScreen;
@@ -100,11 +102,13 @@ class ofApp : public ofBaseApp{
     vector<Answer> answers[3];
     InfoBubble info = InfoBubble(ofGetWidth()/3);
     vector<Button> buttons;
+    vector<ofxTextBlock> captions;
     
     DataThread thread;
     
     ofVideoGrabber video;
-    ofImage introImage;
+    ofImage intro0;
+    ofImage intro1;
     ofImage introOverlay;
     
     ofTrueTypeFont myFont;

@@ -26,6 +26,8 @@ public:
     float w;
     float h;
     
+    int a;
+    
     ofColor fill;
     
     Answer(string _text, bool _correct);
