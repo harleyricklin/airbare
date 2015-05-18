@@ -459,17 +459,19 @@ void ofApp::update(){
     if (idleTimer > 30 && state != 0) {
         if (info.d > 300 && info.expand == FALSE) {
             info.contract = TRUE;
-            beginning = true;
-            
-            for (int i = 0; i < 9; i++) {
-                for (int j = 0; j < 3; j++) {
-                    answers[j][i].reveal = false;
-                }
-            }
-            answerCount = 0;
-            quizNumber = 0;
-//            cout << "STATE RESET TO 0" << endl;
         }
+        
+        beginning = true;
+        
+        for (int i = 0; i < 9; i++) {
+            for (int j = 0; j < 3; j++) {
+                answers[j][i].reveal = false;
+            }
+        }
+        answerCount = 0;
+        quizNumber = 0;
+        //            cout << "STATE RESET TO 0" << endl;
+
     }
     
     if (state != 0) {

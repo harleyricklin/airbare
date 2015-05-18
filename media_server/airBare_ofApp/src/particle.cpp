@@ -52,6 +52,12 @@ void particle::update() {
         targetY = ofRandomHeight();
     }
     
+    if (ofDist(x, y, targetX, targetY) <= 10) {
+        targetX = ofRandomWidth();
+        targetY = ofRandomHeight();
+    }
+    
+    
     if (pop == true) {
         x = x;
         y = y;
