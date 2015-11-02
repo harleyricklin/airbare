@@ -106,7 +106,7 @@ void ofApp::update(){
     dust = thread.dustValue;
     temperature = thread.tempValue;
     
-    int totalco = int(ofMap(thread.coValue, 0, 2, 10, 100));
+    int totalco = int(ofMap(thread.coValue, 0, 500, 10, 100));
     int totaldust = int(ofMap(thread.dustValue, 0, 500, 10, 100));
     int totalNum = totalco + totaldust;
     
@@ -131,11 +131,11 @@ void ofApp::update(){
             }
         }
         
-        cout << "CO particles on screen: " << coparticles << endl;
-        cout << "PM particles on screen: " << dustparticles << endl;
-        
-        cout << "CO particles needed: " << totalco << endl;
-        cout << "PM particles needed: " << totaldust << endl;
+//        cout << "CO particles on screen: " << coparticles << endl;
+//        cout << "PM particles on screen: " << dustparticles << endl;
+//        
+//        cout << "CO particles needed: " << totalco << endl;
+//        cout << "PM particles needed: " << totaldust << endl;
         
         if (coparticles < totalco) {
             int diff = totalco - coparticles;
@@ -1115,6 +1115,24 @@ void ofApp::loadText() {
         
         loadQuiz(f.str(), i);
     }
+    
+    ifstream h;
+    h.open(ofToDataPath("key.txt").c_str());
+    
+    for (int i = 0; i < 2; i++) {
+        string str;
+        getline(h, str);
+        if (i == 0) {
+            thread.apiKey = str;
+        } else {
+            thread.tempKey = str;
+        }
+    }
+    
+    cout << "api Key: " << thread.apiKey << " temp Key: " << thread.tempKey << endl;
+    h.close();
+    
+    
 }
 
 void ofApp::loadQuiz(string filename, int index) {

@@ -33,40 +33,36 @@ public:
     
     void threadedFunction() {
         while(isThreadRunning()) {
-            
-            collectData();
+            if (startingTime == 0 || ofGetElapsedTimeMillis() - startingTime >= 90000) {
+                cout << "FETCHING DATA" << endl;
+                collectData();
+                startingTime = ofGetElapsedTimeMillis();
+            }
             
         }
     }
     
     void collectData() {
         
-        std::string baseurl = "https://www.manylabs.org/data/api/v0/datasets/563/rows/";
-        std::stringstream newurl;
-        std::string url;
+        std::string baseurl = "https://api.forecast.io/forecast/" + tempKey + "/" + lat + "," + lon;
         
-        if (!baseresponse.open(baseurl)) {
+        std::string epaURL = "http://www.airnowapi.org/aq/observation/latLong/current/?format=application/json&latitude=" + lat + "&longitude=" + lon + "&distance=25&API_KEY=" + apiKey;
+        
+        if (!response.open(baseurl)) {
             ofLogWarning("collectData()") << "Failed to parse JSON";
         }
         
+        tempValue = response["currently"]["temperature"].asFloat();
         
-        int lastPage = baseresponse["count"].asInt()/100;
-        lastPage += 1;
-//        cout << lastPage << endl;
+        cout << "temperature: " << tempValue << endl;
         
-        newurl << baseurl << "?page=" << lastPage << "&format=json";
-//        newurl << baseurl;
-        url = newurl.str();
-        
-        if (!response.open(url)) {
+        if (!epaResponse.open(epaURL)) {
             ofLogWarning("collectData()") << "Failed to parse JSON";
         }
         
-        int lastCollected = response["results"].size()-1;
-        
-        coValue = response["results"][lastCollected]["data"][6].asFloat();
-        dustValue = response["results"][lastCollected]["data"][5].asFloat();
-        tempValue = response["results"][lastCollected]["data"][1].asFloat();
+        dustValue = epaResponse[1]["AQI"].asFloat();
+        coValue = epaResponse[0]["AQI"].asFloat();
+        cout << "DUST VALUE FROM EPA: " << dustValue << endl;
 
         // sensor temperature is in Celsius, convert to Fahrenheit
         tempValue = tempValue * 9 / 5 + 32;
@@ -76,13 +72,20 @@ public:
 //        cout << "Dust: " << dustValue << endl;
     }
 
-    
-    ofxJSONElement baseresponse;
     ofxJSONElement response;
+    ofxJSONElement epaResponse;
     float coValue;
     float dustValue;
     float tempValue;
     int lastPage;
+    
+    string apiKey;
+    string tempKey;
+    
+    string lat = "38.328732";
+    string lon = "-85.764771";
+    
+    int startingTime = 0;
     
 };
 

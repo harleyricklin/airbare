@@ -88,6 +88,7 @@ class ofApp : public ofBaseApp{
     bool beginning;
     
     string score;
+    string api;
     
     vector<particle> particles;
     vector<ofImage> introImages;

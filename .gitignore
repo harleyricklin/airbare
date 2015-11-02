@@ -3,3 +3,4 @@ media_server/airBare_ofApp/bin/*.app
 media_server/airBare_ofApp/bin/.DS_Store
 media_server/airBare_ofApp/.DS_Store
 media_server/airBare_ofApp/src/inhalerData.cpp
+media_server/airBare_ofApp/bin/data/key.txt
